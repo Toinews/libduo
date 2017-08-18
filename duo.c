@@ -596,17 +596,17 @@ duo_auth_auth(struct duo_ctx *ctx, const char *username, const char *factor,
         if (strcmp(factor, "push") == 0) {
                 struct duo_push_params *pp =
                     (struct duo_push_params *)factor_arg;
-                ADD_PARAM(params, n, "device", pp->device);
-                if (pp->type != NULL)
+                ADD_PARAM(params, n, "device", pp ? pp->device : "auto");
+                if (pp && pp->type != NULL)
                         ADD_PARAM(params, n, "type", pp->type);
-                if (pp->display_username != NULL)
+                if (pp && pp->display_username != NULL)
                         ADD_PARAM(params, n, "display_username",
                             pp->display_username);
-                if (pp->pushinfo != NULL)
+                if (pp && pp->pushinfo != NULL)
                         ADD_PARAM(params, n, "pushinfo", pp->pushinfo);
         } else if (strcmp(factor, "phone") == 0 ||
                    strcmp(factor, "sms") == 0) {
-                ADD_PARAM(params, n, "device", (const char *)factor_arg);
+                ADD_PARAM(params, n, "device", factor_arg ? (const char *)factor_arg : "auto");
         } else if (strcmp(factor, "passcode") == 0) {
                 ADD_PARAM(params, n, "passcode", (const char *)factor_arg);
         } else if (strcmp(factor, "prompt") == 0) {
@@ -661,7 +661,7 @@ duo_close(struct duo_ctx *ctx)
 {
         if (ctx != NULL) {
                 if (ctx->https != NULL)
-                        https_close(&ctx->https);
+                    https_close(&ctx->https);
                 free(ctx->host);
                 free(ctx->ikey);
                 free(ctx->skey);
