@@ -145,6 +145,8 @@ struct duo_auth {
         union duo_auth_ok ok;
 };
 
+typedef struct duo_auth *duo_auth_t;
+
 struct duo_auth *duo_auth_ping(duo_t *d);
 
 struct duo_auth *duo_auth_check(duo_t *d);
